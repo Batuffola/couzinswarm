@@ -5,6 +5,7 @@ Simulation module
 Contains the `Swarm` class, which is used for simulation.
 """
 import numpy as np
+import scipy as sp
 
 from couzinswarm.objects import Fish
 
@@ -185,18 +186,29 @@ class Swarm:
             positions[i,0,:] = self.fish[i].position
             directions[i,0,:] = self.fish[i].direction
         
+        
 
         bar = PB(max_value=N_time_steps)
         # for each time step
         for t in range(1,N_time_steps+1):
+            
+             #kill me pls -.-'
+            triang = sp.spatial.Delaunay(positions[:,t,:])
+            
+            
 
             # iterate through fish pairs
             for i in range(self.number_of_fish-1):
                 F_i = self.fish[i]
                 r_i = F_i.position
                 v_i = F_i.direction
-
-                for j in range(i+1,self.number_of_fish):
+                
+                neighbor_indices = triang.vertex_neighbor_vertices[1][triang.vertex_neighbor_vertices[0][i]:triang.vertex_neighbor_vertices[0][i+1]]
+                for j in (neighbor_indices):
+                            
+                
+                #cooment out   
+                #for j in range(i+1,self.number_of_fish):
 
                     F_j = self.fish[j]
                     relationship_counted = False
