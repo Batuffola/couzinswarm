@@ -5,6 +5,7 @@ Simulation module
 Contains the `Swarm` class, which is used for simulation.
 """
 import numpy as np
+import scipy as sp
 
 from couzinswarm.objects import Fish
 
@@ -179,24 +180,36 @@ class Swarm:
 
 
         # create result arrays and fill in initial positions
-        positions = np.empty((self.number_of_fish,N_time_steps+1,3))
-        directions = np.empty((self.number_of_fish,N_time_steps+1,3))
+        positions = np.ones((self.number_of_fish,N_time_steps+1,3))
+        directions = np.ones((self.number_of_fish,N_time_steps+1,3))
         for i in range(self.number_of_fish):
             positions[i,0,:] = self.fish[i].position
             directions[i,0,:] = self.fish[i].direction
-        
+       
+        print(positions[:,0,:])
+        print(positions[:,0,:].shape) 
 
         bar = PB(max_value=N_time_steps)
         # for each time step
         for t in range(1,N_time_steps+1):
+            #try:
+            triang = sp.spatial.Delaunay(positions[:,t-1,:])#, qhull_options="Qz Qt")
+            #except:
+
+                #print(t, positions[:,t,:])
+                #raise ValueError
+
+
 
             # iterate through fish pairs
             for i in range(self.number_of_fish-1):
                 F_i = self.fish[i]
                 r_i = F_i.position
                 v_i = F_i.direction
+                neighbor_indices = triang.vertex_neighbor_vertices[1][triang.vertex_neighbor_vertices[0][i]:triang.vertex_neighbor_vertices[0][i+1]]
+                for j in (neighbor_indices):
 
-                for j in range(i+1,self.number_of_fish):
+                    #for j in range(i+1,self.number_of_fish):
 
                     F_j = self.fish[j]
                     relationship_counted = False
