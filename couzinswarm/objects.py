@@ -57,6 +57,7 @@ class Fish:
 
         self.position = position
 
+
         if direction is None:
             self.direction = np.random.randn(3)
             self.direction /= np.linalg.norm(self.direction)
@@ -65,6 +66,23 @@ class Fish:
 
         self.ID = ID
         self.verbose = verbose
+        self. goal = np.random.choice([0,1,2], 1, p= (0.4, 0.2, 0.4))
+
+        if self.goal == 0:
+            self.pos_goal = np.array(( 90, 1, 0))
+            self.opinion_strength = 0.4   
+        #else:
+        elif self.goal == 1:
+            self.pos_goal = np.array(( 1, 1, 0))
+            self.opinion_strength = 0.2
+        else:
+            self.pos_goal = np.array(( 1, 1, 0))
+            self.opinion_strength = 0
+
+        self.goal_direction = self.position - self.pos_goal/ np.linalg.norm(self.position - self.pos_goal)
+
+
+
         self.reset_direction_influences()
 
     def reset_direction_influences(self):
@@ -150,6 +168,10 @@ class Fish:
             new_d = self.d_a
         else:
             new_d = self.direction
+        
+        self.goal_direction = (self.position - self.pos_goal)/ np.linalg.norm(self.position - self.pos_goal)
+
+        new_d = new_d/np.linalg.norm(new_d) + self.opinion_strength * self.goal_direction
 
         if self.verbose:
             print("Fish", self.ID)
